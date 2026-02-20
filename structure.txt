@@ -1,0 +1,30 @@
+Folder PATH listing for volume OS
+Volume serial number is 0000021F CE98:79A9
+C:.
+|   .gitignore
+|   README.md
+|   requirements.txt
+|   structure.txt
+|   
++---dashboard
+|       app.py
+|       
++---data
+|   +---processed
+|   \---raw
++---notebooks
+|       01_data_exploration.ipynb
+|       02_supervised_learning.ipynb
+|       03_unsupervised_learning.ipynb
+|       04_reinforcement_learning.ipynb
+|       
++---sql
+|       feature_engineering.sql
+|       schema.sql
+|       
+\---src
+        data_loader.py
+        reinforcement.py
+        supervised.py
+        unsupervised.py
+        
