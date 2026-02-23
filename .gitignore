@@ -11,6 +11,7 @@ venv/
 # Data files
 data/raw/*
 data/processed/*
+data/database.db
 
 # OS files
 .DS_Store
