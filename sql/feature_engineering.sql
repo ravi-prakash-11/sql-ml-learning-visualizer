@@ -33,14 +33,50 @@ FROM customers c
 LEFT JOIN transaction_stats t ON c.customer_id = t.customer_id
 LEFT JOIN session_stats s ON c.customer_id = s.customer_id;
 
--- Add churn label (example business logic)
+-- Add churn label 
+-- DROP VIEW IF EXISTS customer_features_labeled;
+
+-- CREATE VIEW customer_features_labeled AS
+-- SELECT
+--     *,
+--     CASE
+--         WHEN transaction_count < 4 THEN 1
+--         ELSE 0
+--     END AS churn_label
+-- FROM customer_features;
+
+-- Recreate labeled feature view 
+-- DROP VIEW IF EXISTS customer_features_labeled;
+
+-- CREATE VIEW customer_features_labeled AS
+-- SELECT
+--     *,
+--     CASE
+--         WHEN total_spend < 300
+--              AND avg_session_duration < 5
+--         THEN 1
+--         ELSE 0
+--     END AS churn_label
+-- FROM customer_features;
+
+
+-- Leakage-free, data-driven churn label
 DROP VIEW IF EXISTS customer_features_labeled;
 
 CREATE VIEW customer_features_labeled AS
+WITH ranked AS (
+    SELECT
+        *,
+        NTILE(4) OVER (ORDER BY total_spend) AS spend_quartile,
+        NTILE(4) OVER (ORDER BY avg_session_duration) AS session_quartile
+    FROM customer_features
+)
 SELECT
     *,
     CASE
-        WHEN transaction_count < 4 THEN 1
+        WHEN spend_quartile = 1
+         AND session_quartile = 1
+        THEN 1
         ELSE 0
     END AS churn_label
-FROM customer_features;
+FROM ranked;
